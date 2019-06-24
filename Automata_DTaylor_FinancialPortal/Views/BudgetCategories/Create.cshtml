@@ -1,0 +1,48 @@
+﻿@model Automata_DTaylor_FinancialPortal.Models.BudgetCategory
+
+@{
+    ViewBag.Title = "Create";
+}
+
+<br />
+<h2>Create Budget Category</h2>
+<br />
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(model => model.HouseholdId)
+
+    <div class="form-horizontal">
+
+        <div class="form-group">
+            @Html.Label("Budget Category Name")
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.BudgetCategoryName, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.BudgetCategoryName, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.Label("Target Monthly Limit")
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.TargetAmount, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.TargetAmount, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Create" class="btn btn-teal" />
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Back to Dashboard", "Dashboard", "Households")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

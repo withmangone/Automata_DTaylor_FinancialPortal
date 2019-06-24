@@ -1,0 +1,108 @@
+﻿.Teal {
+    color: #04C5C5 !important;
+}
+.TealUnderline {
+    text-decoration-color: #04C5C5 !important;
+}
+.TealUnderline:hover {
+    text-decoration-color: #04C5C5 !important;
+}
+
+.DarkGrey{
+    color: #404040 !important;
+}
+.MidGrey {
+    color: rgba(84, 84, 84, 0.34) !important;
+}
+
+.btn-teal:hover {
+    background-color: #7feaea !important;
+    border-color: #7feaea !important;
+}
+.btn-teal:focus {
+    background-color: #04C5C5 !important;
+    border-color: #04C5C5 !important;
+}
+
+.invisButton {
+    border: none !important;
+    background-color: transparent !important;
+    color: #1F2225 !important;
+    margin-left: 8px;
+}
+.invisButton:hover {
+    cursor: pointer !important;
+}
+
+.WrapText {
+    text-wrap:normal !important;
+}
+
+.FullWidth {
+    width:100% !important;
+}
+.ThirdWidth {
+    width: 33% !important;
+}
+
+.Down50 {
+    margin-top: 50px;
+}
+.Down40 {
+    margin-top: 40px;
+}
+.Down30 {
+    margin-top: 30px;
+}
+.Down25 {
+    margin-top: 25px;
+}
+.Down20 {
+    margin-top: 20px;
+}
+.Down10 {
+    margin-top: 10px;
+}
+.Up50 {
+    margin-top: -50px;
+}
+
+.Up40 {
+    margin-top: -40px;
+}
+
+.Up30 {
+    margin-top: -30px;
+}
+
+.Up20 {
+    margin-top: -20px;
+}
+.Up15{
+    margin-top: -15px;
+}
+.Up10 {
+    margin-top: -10px;
+}
+
+.bg-yellow {
+    color: #FFDB58 !important;
+}
+
+.NoBullet{
+    list-style:none !important;
+}
+
+.AboveAll {
+    z-index: 16777271 !important;
+}
+
+.chart-title{
+    margin-left: 30px !important;
+    margin-top: 10px !important;
+}
+
+.WidgetNumber{
+    font-size: 55px;
+    margin-left:50px;
+}

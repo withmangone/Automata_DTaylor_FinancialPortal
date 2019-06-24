@@ -1,0 +1,165 @@
+﻿@using Automata_DTaylor_FinancialPortal.Enumerations
+@using Automata_DTaylor_FinancialPortal.ExtensionMethods
+@using Automata_DTaylor_FinancialPortal.Models
+@using Microsoft.AspNet.Identity
+
+
+<!DOCTYPE html>
+<!--[if IE 8]> <html lang="en" class="ie8"> <![endif]-->
+<!--[if !IE]><!-->
+<html lang="en">
+<!--<![endif]-->
+<head>
+    <meta charset="utf-8" />
+    <title>DT Financial Portal</title>
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport" />
+    <meta content="DT Financial Portal" name="description" />
+    <meta content="Drew Taylor" name="author" />
+
+    <!--favicon-->
+    <link name="favicon" id="favicon" rel="shortcut icon" type="image/x-icon" href="~/favicon.ico" />
+
+    <!-- ================== BEGIN BASE CSS STYLE ================== -->
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
+    <link href="~/Content/jquery-ui.min.css" rel="stylesheet" />
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous">
+    <link href="~/Content/animate.min.css" rel="stylesheet" />
+    <link href="~/Content/style.min.css" rel="stylesheet" />
+    <link href="~/Content/style-responsive.min.css" rel="stylesheet" />
+    <link href="~/Content/teal.css" rel="stylesheet" id="theme" />
+    <link href="~/Content/DrewCustom.css" rel="stylesheet" />
+    <!-- ================== END BASE CSS STYLE ================== -->
+    <!-- ================== BEGIN PAGE LEVEL CSS STYLE ================== -->
+    <link href="~/Content/jquery-jvectormap.css" rel="stylesheet" />
+    <link href="~/Content/bootstrap_calendar.css" rel="stylesheet" />
+    <link href="~/Content/jquery.gritter.css" rel="stylesheet" />
+    <link href="~/Content/nv.d3.css" rel="stylesheet" />
+    <link href="~/Content/smart_wizard.css" rel="stylesheet" />
+    <!-- ================== END PAGE LEVEL CSS STYLE ================== -->
+    <!-- ================== BEGIN BASE JS ================== -->
+    <script src="~/Scripts/pace.min.js"></script>
+    <link href="~/Content/morris.css" rel="stylesheet" />
+    <!-- ================== END BASE JS ================== -->
+</head>
+<body>
+    <!-- begin #page-loader -->
+    <div id="page-loader" class="fade show"><span class="spinner"></span></div>
+    <!-- end #page-loader -->
+    <!-- begin #page-container -->
+    <div id="page-container" class="fade page-sidebar-fixed page-header-fixed">
+        <!-- begin #header -->
+        <div id="header" class="header navbar-inverse">
+            <!-- begin navbar-header -->
+            <div class="navbar-header">
+                @if (User.IsInRole(PortalRole.Lobbyist.ToString()))
+                {
+                    <a href=@Url.Action("Index", "Home") class="navbar-brand"><i class="fas fa-wallet fa-lg m-r-5"></i> <b>DT</b>  Financial Portal </a>
+                }
+                else if (User.IsInRole(PortalRole.HeadOfHouse.ToString()) || User.IsInRole(PortalRole.Resident.ToString()))
+                {
+                    <a href=@Url.Action("Dashboard", "Households") class="navbar-brand"><i class="fas fa-wallet fa-lg m-r-5"></i> <b>DT</b>  Financial Portal </a>
+                }
+                else if (User.IsInRole(PortalRole.Admin.ToString()))
+                {
+                    <a href=@Url.Action("Index", "Admin") class="navbar-brand"><i class="fas fa-wallet fa-lg m-r-5"></i> <b>DT</b>  Financial Portal </a>
+                }
+                else
+                {
+                    <a href=@Url.Action("Login", "Accounts") class="navbar-brand"><i class="fas fa-wallet fa-lg m-r-5"></i> <b>DT</b>  Financial Portal </a>
+                }
+            </div>
+            <!-- end navbar-header -->
+            <!-- begin header-nav -->
+            <ul class="navbar-nav navbar-right">
+                <li class="dropdown navbar-user">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        @{
+                            var userId = User.Identity.GetUserId();
+                            ApplicationDbContext db = new ApplicationDbContext();
+                            var user = db.Users.Find(userId);
+                        }
+                        <img src="@user.ProfilePic" alt="" />
+                        <span class="d-none d-md-inline">@user.FullName</span> <b class="caret"></b>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right">
+                        @if (db.Households.Find(user.HouseholdId).IsConfigured)
+                        {
+                            <a href="@Url.Action("Create", "Transactions")" class="dropdown-item">Add Transaction</a>
+                        }
+                        <a href="@Url.Action("Manage", "Account")" class="dropdown-item">Edit Profile</a>
+                        @if (User.IsInRole("Resident"))
+                        {
+                            using (Html.BeginForm("Leave", "Households", FormMethod.Post))
+                            {
+                                @Html.AntiForgeryToken();
+                                <a href="" class="dropdown-item"></a><button type="submit">Leave Household</button>
+                            }
+                        }
+                        @if (User.IsInRole("HeadOfHouse") && db.Households.Find(user.HouseholdId).IsConfigured)
+                        {
+                            <a href="@Url.Action("Edit", "Households", new { id = user.HouseholdId })" class="dropdown-item">Household Settings</a>
+                        }
+                        <div class="dropdown-divider"></div>
+                        @using (Html.BeginForm("Logoff", "Account", FormMethod.Post))
+                        {
+                            @Html.AntiForgeryToken();
+                            <a href=""></a><button type="submit" class="invisButton">Log Off</button>
+                        }
+                    </div>
+                </li>
+            </ul>
+            <!-- end header navigation right -->
+        </div>
+        <!-- end #header -->
+        <!--Begin Content-->
+        <div class="container-fluid">
+            @RenderBody()
+        </div>
+        <!--End Content-->
+        <!-- begin scroll to top btn -->
+        <a href="javascript:;" class="btn btn-icon btn-circle btn-success btn-scroll-to-top fade" data-click="scroll-top"><i class="fa fa-angle-up"></i></a>
+        <!-- end scroll to top btn -->
+    </div>
+    <!-- end page container -->
+    <!-- ================== BEGIN BASE JS ================== -->
+    <script src="~/Scripts/jquery-3.3.1.min.js"></script>
+    <script src="~/Scripts/jquery-ui.min.js"></script>
+    <script src="~/Scripts/bootstrap.bundle.min.js"></script>
+    <!--[if lt IE 9]>
+        <script src="../assets/crossbrowserjs/html5shiv.js"></script>
+        <script src="../assets/crossbrowserjs/respond.min.js"></script>
+        <script src="../assets/crossbrowserjs/excanvas.min.js"></script>
+    <![endif]-->
+    <script src="~/Scripts/jquery.slimscroll.min.js"></script>
+    <script src="~/Scripts/js.cookie.js"></script>
+    <script src="~/Scripts/facebook.min.js"></script>
+    <script src="~/Scripts/apps.min.js"></script>
+    <!-- ================== END BASE JS ================== -->
+    <!-- ================== BEGIN PAGE LEVEL JS ================== -->
+    <script src="~/Scripts/d3.min.js"></script>
+    <script src="~/Scripts/nv.d3.js"></script>
+    <script src="~/Scripts/jquery-jvectormap.min.js"></script>
+    <script src="~/Scripts/jquery-jvectormap-world-merc-en.js"></script>
+    <script src="~/Scripts/bootstrap_calendar.min.js"></script>
+    <script src="~/Scripts/jquery.gritter.js"></script>
+    <script src="~/Scripts/dashboard-v2.min.js"></script>
+    <script src="~/Scripts/jquery.smartWizard.js"></script>
+    <script src="~/Scripts/form-wizards.demo.min.js"></script>
+    <script src="~/Scripts/raphael.min.js"></script>
+    <script src="~/Scripts/morris.js"></script>
+    <!-- ================== END PAGE LEVEL JS ================== -->
+
+    <script>
+        $(document).ready(function () {
+            App.init();
+            //DashboardV2.init();
+            FormWizard.init();
+        });
+    </script>
+
+    @RenderSection("scripts", required: false)
+
+</body>
+</html>
+

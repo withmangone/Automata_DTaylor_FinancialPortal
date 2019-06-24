@@ -1,0 +1,419 @@
+﻿@using Microsoft.AspNet.Identity;
+@using System.Globalization
+@using Automata_DTaylor_FinancialPortal.Models
+@using Automata_DTaylor_FinancialPortal.Helpers
+@using Automata_DTaylor_FinancialPortal.Enumerations
+@using Automata_DTaylor_FinancialPortal.ExtensionMethods
+@model Automata_DTaylor_FinancialPortal.ViewModels.DashboardViewModel
+
+@{ 
+    ApplicationDbContext db = new ApplicationDbContext();
+}
+
+<br />
+@if (!Model.Household.IsConfigured)
+{
+    <h1 class="page-header">Household Setup </h1>
+    <br />
+    using (Html.BeginForm("WizardSubmit", "Households", FormMethod.Post))
+    {
+        @Html.AntiForgeryToken()
+        @Html.Hidden("houseId", Model.Household.Id)
+        <!-- begin wizard-form -->
+        <div class="form-control-with-bg">
+            <!-- begin wizard -->
+            <div id="wizard">
+                <!-- begin wizard-step -->
+                <ul>
+                    <li class="col-md-3 col-sm-4 col-6">
+                        <a href="#step-1">
+                            <span class="number">1</span>
+                            <span class="info text-ellipsis">
+                                Bank Account
+                                <small class="text-ellipsis">Required</small>
+                            </span>
+                        </a>
+                    </li>
+                    <li class="col-md-3 col-sm-4 col-6">
+                        <a href="#step-2">
+                            <span class="number">2</span>
+                            <span class="info text-ellipsis">
+                                Budget Categories
+                                <small class="text-ellipsis">Minimum of one required</small>
+                            </span>
+                        </a>
+                    </li>
+                    <li class="col-md-3 col-sm-4 col-6">
+                        <a href="#step-3">
+                            <span class="number">3</span>
+                            <span class="info text-ellipsis">
+                                Budget Category Items
+                                <small class="text-ellipsis">Minimum of one required</small>
+                            </span>
+                        </a>
+                    </li>
+                    <li class="col-md-3 col-sm-4 col-6">
+                        <a href="#step-4">
+                            <span class="number">4</span>
+                            <span class="info text-ellipsis">
+                                Completion
+                                <small class="text-ellipsis"></small>
+                            </span>
+                        </a>
+                    </li>
+                </ul>
+                <!-- end wizard-step -->
+                <!-- begin wizard-content -->
+                <div>
+                    <!-- begin step-1 -->
+                    <div id="step-1">
+                        <!-- begin fieldset -->
+                        <fieldset>
+                            <!-- begin row -->
+                            <div class="row">
+                                <!-- begin col-8 -->
+                                <div class="col-md-8 offset-md-2">
+                                    <legend class="no-border f-w-700 p-b-0 m-t-0 m-b-20 f-s-16 text-inverse">Initial Bank Account Setup</legend>
+                                    <!-- begin form-group row -->
+                                    <div class="form-group row m-b-10">
+                                        <label class="col-md-3 text-md-right col-form-label">Account Name</label>
+                                        <div class="col-md-6">
+                                            @Html.EditorFor(model => model.BankAccount.AccountName, new { htmlAttributes = new { placeholder = "My Primary Checking Account", @class = "form-control" } })
+                                        </div>
+                                    </div>
+                                    <!-- end form-group row -->
+                                    <!-- begin form-group row -->
+                                    <div class="form-group row m-b-10">
+                                        <label class="col-md-3 text-md-right col-form-label">Account Type</label>
+                                        <div class="col-md-6">
+                                            @Html.EnumDropDownListFor(model => Model.BankAccount.AccountType, htmlAttributes: new { @class = "form-control" })
+                                        </div>
+                                    </div>
+                                    <!-- end form-group row -->
+                                    <!-- begin form-group row -->
+                                    <div class="form-group row m-b-10">
+                                        <label class="col-md-3 text-md-right col-form-label">Starting Balance</label>
+                                        <div class="col-md-6">
+                                            @Html.EditorFor(model => model.BankAccount.StartingBalance, new { htmlAttributes = new { placeholder = "1234.56", @class = "form-control" } })
+                                        </div>
+                                    </div>
+                                    <!-- end form-group row -->
+                                    <!-- begin form-group row -->
+                                    <div class="form-group row m-b-10">
+                                        <label class="col-md-3 text-md-right col-form-label">Low Balance Alert Threshold</label>
+                                        <div class="col-md-6">
+                                            @Html.EditorFor(model => model.BankAccount.LowBalanceLevel, new { htmlAttributes = new { placeholder = "100.00", @class = "form-control" } })
+                                        </div>
+                                    </div>
+                                    <!-- end form-group row -->
+                                </div>
+                                <!-- end col-8 -->
+                            </div>
+                            <!-- end row -->
+                        </fieldset>
+                        <!-- end fieldset -->
+                    </div>
+                    <!-- end step-1 -->
+                    <!-- begin step-2 -->
+                    <div id="step-2">
+                        <!-- begin fieldset -->
+                        <fieldset>
+                            <!-- begin row -->
+                            <div class="row">
+                                <!-- begin col-8 -->
+                                <div class="col-md-8 offset-md-2">
+                                    <legend class="no-border f-w-700 p-b-0 m-t-0 m-b-20 f-s-16 text-inverse">Create a category for your transactions, and include a monthly target budget for it.</legend>
+                                    <!-- begin form-group row -->
+                                    <div class="form-group row m-b-10">
+                                        <label class="col-md-3 text-md-right col-form-label">Budget Category</label>
+                                        <div class="col-md-6">
+                                            @Html.EditorFor(model => model.BudgetCategory.BudgetCategoryName, new { htmlAttributes = new { placeholder = "Utilities", @class = "form-control" } })
+                                        </div>
+                                        <div class="col-md-3">
+                                            @Html.EditorFor(model => model.BudgetCategory.TargetAmount, new { htmlAttributes = new { placeholder = "100.00", @class = "form-control" } })
+                                        </div>
+                                    </div>
+                                    <!-- end form-group row -->
+                                </div>
+                                <!-- end col-8 -->
+                            </div>
+                            <!-- end row -->
+                        </fieldset>
+                        <!-- end fieldset -->
+                    </div>
+                    <!-- end step-2 -->
+                    <!-- begin step-3 -->
+                    <div id="step-3">
+                        <!-- begin fieldset -->
+                        <fieldset>
+                            <!-- begin row -->
+                            <div class="row">
+                                <!-- begin col-8 -->
+                                <div class="col-md-8 offset-md-2">
+                                    <legend class="no-border f-w-700 p-b-0 m-t-0 m-b-20 f-s-16 text-inverse">Fill out a specific item to fall under your category.</legend>
+                                    <!-- begin form-group row -->
+                                    <div class="form-group row m-b-10">
+                                        <label class="col-md-3 text-md-right col-form-label">Budget Category Item</label>
+                                        <div class="col-md-6">
+                                            @Html.EditorFor(model => model.BudgetCategoryItem.ItemName, new { htmlAttributes = new { placeholder = "Electric Bill", @class = "form-control" } })
+                                        </div>
+                                    </div>
+                                    <!-- end form-group row -->
+                                </div>
+                                <!-- end col-8 -->
+                            </div>
+                            <!-- end row -->
+                        </fieldset>
+                        <!-- end fieldset -->
+                    </div>
+                    <!-- end step-3 -->
+                    <!-- begin step-4 -->
+                    <div id="step-4">
+                        <div class="jumbotron m-b-0 text-center">
+                            <h2 class="text-inverse">You're All Done!</h2>
+                            <p class="m-b-30 f-s-16">In the future, you can create new and alter existing bank accounts, budget categories and budget category items from your household dashboard. <br />You'll find the ability to add transactions and monitor financial data at the household dashboard as well. <br /><br />Let's go there now! </p>
+                            <p><button type="submit" class="btn btn-teal btn-lg">Proceed to Household Dashboard</button></p>
+                        </div>
+                    </div>
+                    <!-- end step-4 -->
+                </div>
+                <!-- end wizard-content -->
+            </div>
+            <!-- end wizard -->
+        </div>
+        <!-- end wizard-form -->
+    }
+}
+else
+{
+    <div id="content">
+        <!-- begin page-header -->
+        <h1 class="page-header">Dashboard for '@Model.Household.Name' <small>&nbsp;@Model.Household.Greeting</small></h1>
+        <!-- end page-header -->
+        @if(User.IsInRole("HeadOfHouse"))
+        {
+            <div class="row">
+                <div class="col-md-4"><a href="@Url.Action("Create", "BankAccounts")" class="btn btn-teal FullWidth">Add Bank Account</a></div>
+                <div class="col-md-4"><a href="@Url.Action("Create", "BudgetCategories")" class="btn btn-teal FullWidth">Add Budget Category</a></div>
+                <div class="col-md-4"><a href="@Url.Action("Create", "BudgetCategoryItems")" class="btn btn-teal FullWidth">Add Budget Category Item</a></div>
+            </div>
+            <br />
+        }
+        <br />
+        <!-- begin row -->
+        <div class="row">
+            <!-- begin col-3 -->
+            <div class="col-md-4">
+                <div class="widget widget-stats bg-red-transparent-6">
+                    <div class="stats-content">
+                        <i class="fas fa-exclamation-triangle fa-9x pull-right MidGrey"></i>
+                        <div class="stats-title">Overdrafted Accounts:</div>
+                        <h1 class="WidgetNumber">@BadgeHelper.AccountsOverBudget(Model)</h1>
+                    </div>
+                </div>
+            </div>
+            <!-- end col-3 -->
+            <!-- begin col-3 -->
+            <div class="col-md-4">
+                <div class="widget widget-stats bg-orange-transparent-6">
+                    <div class="stats-content">
+                        <i class="fas fa-tachometer-alt fa-9x pull-right MidGrey"></i>                    
+                        <div class="stats-title">Low Balance Accounts:</div>
+                        <h1 class="WidgetNumber">@BadgeHelper.LowBalanceAccounts(Model)</h1>
+                    </div>
+                </div>
+            </div>
+            <!-- end col-3 -->
+            <!-- begin col-3 -->
+            <div class="col-md-4">
+                <div class="widget widget-stats bg-yellow-transparent-6">
+                    <div class="stats-content">
+                        <i class="fas fa-hand-paper fa-9x pull-right MidGrey"></i>
+                        <div class="stats-title">Categories Over Target Budget:</div>
+                        <h1 class="WidgetNumber">@BadgeHelper.CategoriesOverBudget(Model)</h1>
+                    </div>
+                </div>
+            </div>
+            <!-- end col-3 -->
+        </div>
+        <!-- end row -->
+        <!-- begin row -->
+        <div class="row">
+            <!-- begin col-8 -->
+            <div class="col-lg-8">
+                <div class="widget-chart with-sidebar">
+                    <div class="bg-white">
+                        <div class="row">
+                            <div class="widget-chart-sidebar pull-right">
+                                <ul class="f-s-11 NoBullet">
+                                    <li><i class="fa fa-circle fa-fw DarkGrey f-s-9 m-r-5 t-minus-1"></i><span>Low Budget Level</span></li>
+                                    <li><i class="fa fa-circle fa-fw Teal f-s-9 m-r-5 t-minus-1"></i><span>Current Balance</span></li>
+                                </ul>
+                            </div>
+                            <h4 class="chart-title">
+                                Bank Accounts
+                                <small>Low Balance Level vs Current Balance</small>
+                            </h4>
+                        </div>
+                        <div id="morrisBar" style="height: 260px;"></div>
+                    </div>
+                </div>
+            </div>
+            <!-- end col-8 -->
+            <!-- begin col-4 -->
+            <div class="col-lg-4">
+                <div class="panel panel-default" data-sortable-id="index-1">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">
+                            Transactions (Last 30 Days)
+                        </h4>
+                    </div>
+                    <!-- begin widget-list -->
+                    <div class="widget-list widget-list-rounded m-b-30" data-scrollbar="true" data-height="275px">
+                        <!-- begin widget-list-item -->
+                        @foreach (var transaction in Model.Household.BankAccounts.SelectMany(b => b.Transactions.Where(t => t.Created > DateTimeOffset.UtcNow.ToLocalTime().AddMonths(-1))).OrderByDescending(t => t.Created))
+                        {
+                            var user = db.Users.Find(transaction.CreatedById);
+                            <div class="widget-list-item">
+                                <div class="widget-list-media">
+                                    <img src="@user.ProfilePic" class="rounded" data-toggle="tooltip" data-placement="top" title="@user.FullName"/>
+                                </div>
+                                <div class="widget-list-content">
+                                    <p class="pull-right">@transaction.BudgetCategoryItem.ItemName</p>
+                                    <h4 class="widget-list-title">@transaction.Payee</h4>
+                                    <p class="widget-list-desc">$@transaction.Amount</p>
+                                </div>
+                            </div>
+                        }
+                        <!-- end widget-list-item -->
+                    </div>
+                    <!-- end widget-list -->
+                </div>
+            </div>
+            <!-- end col-4 -->
+        </div>
+        <!-- end row -->
+        <!-- begin row -->
+        <div class="row">
+            <!-- begin col-4 -->
+            <div class="col-lg-4">
+                <!-- begin panel -->
+                <div class="panel panel-default" data-sortable-id="index-2">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">Household Notifications </h4>
+                    </div>
+                    <div class="panel-body bg-silver" data-scrollbar="true" data-height="300px">
+                        <div class="chats">
+                            @foreach (var notification in db.Notifications.Where(n => n.HouseholdId == Model.Household.Id).OrderByDescending(n => n.Created))
+                            {
+                                <div class="left">
+                                    <span class="date-time">@notification.Created.DateTime</span>
+                                    <a href="javascript:;" class="name">@notification.NotificationType.ToString()</a>
+                                    <div class="message">
+                                        @notification.NotificationBody
+                                    </div>
+                                </div>     
+                            }
+                        </div>
+                    </div>                   
+                </div>
+                <!-- end panel -->
+            </div>
+            <!-- end col-4 -->
+            <!-- begin col-4 -->
+            <div class="col-lg-4">
+                <!-- begin panel -->
+                <div class="panel panel-default" data-sortable-id="index-3">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">Category Expenditures vs Target Budgets (Last 30 Days)</h4>
+                    </div>
+                    <div class="list-group" data-scrollbar="true" data-height="300px">
+                        <br />
+                        @foreach (var category in Model.Household.BudgetCategories)
+                        {
+                            var amountUsed = DashboardHelper.TargetAmountUsedThisMonth(category);
+                            var percentageUsed = Math.Floor(amountUsed * 100);
+                            if (amountUsed < (decimal).66)
+                            {
+                                <p class="m-l-10">@category.BudgetCategoryName</p>
+                                <div class="container Up15">
+                                    <!-- animated -->
+                                    <div class="progress progress-md m-b-10">
+                                        <div class="progress-bar progress-bar-striped progress-bar-animated rounded-corner bg-lime-transparent-8" style="width: @percentageUsed%"></div>
+                                    </div>
+                                </div>
+                            }
+                            else if (amountUsed < (decimal).85)
+                            {
+                                <p class="m-l-10">@category.BudgetCategoryName</p>
+                                <div class="container Up15">
+                                    <!-- animated -->
+                                    <div class="progress progress-md m-b-10">
+                                        <div class="progress-bar progress-bar-striped progress-bar-animated rounded-corner bg-yellow-transparent-8" style="width: @percentageUsed%"></div>
+                                    </div>
+                                </div>
+                            }
+                            else
+                            {
+                                <p class="m-l-10">@category.BudgetCategoryName</p>
+                                <div class="container Up15">
+                                    <!-- animated -->
+                                    <div class="progress progress-md m-b-10">
+                                        <div class="progress-bar progress-bar-striped progress-bar-animated rounded-corner bg-red-transparent-8" style="width: @percentageUsed%"></div>
+                                    </div>
+                                </div>
+                            }
+
+                        }
+                    </div>
+                </div>
+                <!-- end panel -->
+            </div>
+            <!-- end col-4 -->
+            <!-- begin col-4 -->
+            <div class="col-lg-4">
+                <!-- begin panel -->
+                <div class="panel panel-default" data-sortable-id="index-4">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">Household Members</h4>
+                    </div>
+                    <ul class="registered-users-list clearfix" data-scrollbar="true" data-height="300px">
+                        @foreach (var member in Model.Household.Members.ToList())
+                        {
+                            <li>
+                                <a><img src="@member.ProfilePic" alt="" /></a>
+                                <h4 class="username">
+                                    @member.FullName
+                                    @*<small>@roleHelper.ListUserRoles(member.Id).FirstOrDefault()</small>*@
+                                </h4>
+                            </li>
+                        }
+                    </ul>
+                    @*<div class="panel-footer text-center">
+                            <a href="javascript:;" class="text-inverse">View All</a>
+                        </div>*@
+                </div>
+                <!-- end panel -->
+            </div>
+            <!-- end col-4 -->
+        </div>
+        <!-- end row -->
+    </div>
+}
+
+@section scripts{ 
+        <script>
+            $.post('/Dashboard/BuildAccountBudgetData', function (barDataList) {
+                new Morris.Bar({
+                    resize: true,
+                    element: 'morrisBar',
+                    data: barDataList,
+                    xkey: 'budget',
+                    ykeys: ['target', 'actual'],
+                    labels: ['Low Budget Level', 'Current Balance'],
+                    hideHover: true,
+                    barColors: ['#404040', '#04c5c5']
+                });
+            });
+        </script>
+    }

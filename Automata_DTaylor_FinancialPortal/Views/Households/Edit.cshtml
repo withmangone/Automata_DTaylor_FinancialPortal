@@ -1,0 +1,120 @@
+﻿@model Automata_DTaylor_FinancialPortal.Models.Household
+@using Automata_DTaylor_FinancialPortal.Models
+@using Automata_DTaylor_FinancialPortal.ExtensionMethods
+@using Microsoft.AspNet.Identity
+
+
+@{
+    ViewBag.Title = "Edit";
+}
+<br />
+<h2>Edit Household</h2>
+<br />
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.HiddenFor(model => model.Id)
+        @Html.HiddenFor(model => model.Created)
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-12">
+                @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Greeting, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-12">
+                @Html.EditorFor(model => model.Greeting, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Greeting, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Save" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+<br />
+<br />
+<div class="row">
+    <div class="col-md-3"><a href="@Url.Action("Index", "BankAccounts")" class="btn btn-teal FullWidth">Edit Bank Accounts</a></div>
+    <div class="col-md-3"><a href="@Url.Action("Index", "BudgetCategories")" class="btn btn-teal FullWidth">Edit Budget Categories</a></div>
+    <div class="col-md-3"><a href="@Url.Action("Index", "BudgetCategoryItems")" class="btn btn-teal FullWidth">Edit Budget Category Items</a></div>
+    <div class="col-md-3"><a href="@Url.Action("Index", "Transactions")" class="btn btn-teal FullWidth">Edit Transactions</a></div>
+</div>
+<br />
+<hr />
+<br />
+@{
+    ApplicationDbContext db = new ApplicationDbContext();
+    var houseId = User.Identity.GetHouseholdId();
+}
+@if (db.Users.Where(u => u.HouseholdId == houseId).Count() > 1)
+{
+    using (Html.BeginForm("PromoteAsync", "Households", FormMethod.Post))
+    {
+        @Html.AntiForgeryToken()
+        <div class="row mx-auto text-center">
+            <h5 class="mx-auto text-center">You can't delete a household with multiple users. If you'd like to leave this household, you must first promote someone else to head of the household.</h5>
+        </div>
+        <br />
+        <div class="row">
+            <div class="col-md-10">
+                <div class="form-group">
+                    @Html.Label("Promote A Resident To Head Of Household", htmlAttributes: new { @class = "control-label" })
+                    <div class="col-md-12">
+                        @Html.DropDownList("targetUserId", (IEnumerable<SelectListItem>)ViewBag.Users, null, htmlAttributes: new { @class = "form-control" })
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-teal FullWidth Down25">Promote</button>
+            </div>
+        </div>
+    }
+}
+else
+{
+    using (Html.BeginForm("Delete", "Households", FormMethod.Post))
+    {
+        @Html.AntiForgeryToken()
+        <div class="row">
+            <button type="submit" class="btn btn-teal">Delete Household</button>
+        </div>
+    }
+}
+<br />
+@using (Html.BeginForm("InviteMember", "Households", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+    <div class="row">
+        <div class="col-md-10">
+            <div class="form-group">
+                @Html.Label("Invite A Friend To Join Your Household!", htmlAttributes: new { @class = "control-label" })
+                <div class="col-md-12">
+                    <input class="FullWidth" type="email" name="RecipientEmail" required/>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <button type="submit" class="btn btn-teal FullWidth Down25">Invite</button>
+        </div>
+    </div>
+}
+<br />
+<div>
+    @Html.ActionLink("Back to Dashboard", "Dashboard")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

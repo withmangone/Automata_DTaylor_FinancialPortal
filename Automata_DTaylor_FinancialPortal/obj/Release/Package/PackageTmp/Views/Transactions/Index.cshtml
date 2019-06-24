@@ -1,0 +1,111 @@
+﻿@model IEnumerable<Automata_DTaylor_FinancialPortal.Models.Transaction>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<br />
+<h2>Transactions Index</h2>
+<br />
+
+<div class="panel panel-inverse FullWidth" >
+    <div class="panel-heading">
+        <div class="panel-heading-btn">
+            <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-default" data-click="panel-expand"><i class="fa fa-expand"></i></a>
+            <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-success" data-click="panel-reload"><i class="fa fa-redo"></i></a>
+            <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-warning" data-click="panel-collapse"><i class="fa fa-minus"></i></a>
+            <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-danger" data-click="panel-remove"><i class="fa fa-times"></i></a>
+        </div>
+        <h4 class="panel-title">Transactions</h4>
+    </div>
+    <div class="panel-body p-t-0">
+        <div class="form-horizontal">
+            <table class="table">
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.BankAccount.AccountName)
+                    </th>
+                    <th>
+                        @Html.Display("Transaction Type")
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Amount)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Payee)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Memo)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Created)
+                    </th>
+                    <th>
+                        @Html.Display("Created By")
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Reconciled)
+                    </th>
+                    <th>
+                        @Html.Display("Reconciled Date")
+                    </th>
+                    <th></th>
+                </tr>
+
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.BankAccount.AccountName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.TransactionType)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Amount)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Payee)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Memo)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Created.DateTime)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.CreatedBy.FullName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Reconciled)
+                        </td>
+                        @{ 
+                            if(item.ReconciledDate != null)
+                            {
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.ReconciledDate.Value.DateTime)
+                                </td>
+                            }
+                            else
+                            {
+                                <td>
+                                    @Html.Display(" ")
+                                </td>
+                            }
+                        }
+                        <td>
+                            @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
+                            @Html.ActionLink("Delete", "Delete", new { id = item.Id })
+                        </td>
+                    </tr>
+                }
+
+            </table>
+        </div>
+    </div>
+</div>
+
+
+
+
+

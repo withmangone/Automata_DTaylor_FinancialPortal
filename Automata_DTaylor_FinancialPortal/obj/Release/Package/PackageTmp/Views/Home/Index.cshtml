@@ -1,0 +1,39 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+
+<div class="jumbotron text-center">
+    <h1>Welcome to the lobby.</h1>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <h6>Create A Household</h6>
+        @using (Html.BeginForm("CreateAsync", "Households", FormMethod.Post))
+        {
+            @Html.AntiForgeryToken()
+            <div class="col-md-12 m-b-15">
+                <input type="text" name="Name" class="form-control" placeholder="Household Name" required />
+            </div>
+            <div class="col-md-12 m-b-15">
+                <input type="text" name="Greeting" class="form-control" placeholder="Household Welcome Message" required />
+            </div>
+            <div>
+                <button type="submit" class="btn btn-teal btn-block btn-lg">Create Household</button>
+            </div>
+        }
+    </div>
+    <div class="col-md-6">
+        @using (Html.BeginForm("Join", "Households", FormMethod.Post))
+        {
+            @Html.AntiForgeryToken()
+            <h6>Join An Existing Household</h6>
+            <div class="col-md-12 m-b-15">
+                <input type="text" name="Code" class="form-control" placeholder="Household Code" required />
+            </div>
+            <div>
+                <button type="submit" class="btn btn-teal btn-block btn-lg">Join Household</button>
+            </div>
+        }
+    </div>
+</div>
